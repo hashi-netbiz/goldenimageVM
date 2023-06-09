@@ -13,17 +13,17 @@ output "vault_address" {
 #   value       = var.VAULT_NAMESPACE
 # }
 
-# output "vm_user_login" {
-#     description = "vm user login"
-#     value = data.vault_generic_secret.vmuser_cred.data
-# }
-
-# output "subnet-id" {
-#     description = "subnet to receive vm"
-#     value = data.azurerm_subnet.vm_subnet.id
-# }
-
 output "new_vm_id" {
   description = "id of the new virtual machine"
   value       = module.virtual-machine.vm_id
 }
+
+# output "customdata" {
+#   value = data.local_file.cloudinit.content
+# }
+
+# output "ssh_private_key" {
+#   description = "This is the vm private key"
+#   value       = tls_private_key.ssh_key.private_key_pem
+#   sensitive   = true
+# }

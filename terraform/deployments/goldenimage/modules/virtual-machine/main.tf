@@ -14,6 +14,13 @@ resource "azurerm_linux_virtual_machine" "new_vm" {
       caching              = "ReadWrite"
       storage_account_type = var.os_disk_type
     }
-
+    
+    custom_data = base64encode(var.customdata_cloudinit)
     source_image_id = var.image_id
+
+    admin_ssh_key  {
+      username   = var.admin_username 
+      public_key = var.ssh_public_key
+    }    
 }
+

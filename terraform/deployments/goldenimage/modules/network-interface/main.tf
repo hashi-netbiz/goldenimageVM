@@ -1,6 +1,10 @@
+resource "random_id" "my_id" {
+  byte_length = 8
+}
+
 # Create public IPs
 resource "azurerm_public_ip" "my_nic_public_ip" {
-  name                = "myPublicIP"
+  name                = "${random_id.my_id.id}_PublicIP"
   location            = var.location
   resource_group_name = var.resource_group_name 
   allocation_method   = "Dynamic"
@@ -21,7 +25,7 @@ resource "azurerm_network_interface" "nic" {
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "ssh_nsg" {
-  name                = "sshNetworkSecurityGroup"
+  name                = "${random_id.my_id.id}_NetworkSG"
   location            = var.location
   resource_group_name = var.resource_group_name
 

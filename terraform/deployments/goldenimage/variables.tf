@@ -44,8 +44,8 @@ variable "os_disk_type" {
 # }
 
 variable "vault_vmuser_secret_path" {
-    type = string
-    description = "vm user credentials"
+  type        = string
+  description = "vm user credentials"
 }
 
 variable "image_version" {
@@ -64,16 +64,16 @@ variable "image_gallery" {
 }
 
 variable "VAULT_ADDR" {
-    type = string
-    description = "address of vault cluster"  
+  type        = string
+  description = "address of vault cluster"
 }
 
-# variable "VAULT_TOKEN" {
-#     type = string
-#     description = "Token to access vault"  
-# }
+variable "VAULT_TOKEN" {
+    type = string
+    description = "Token to access vault"  
+}
 
-# variable "VAULT_NAMESPACE" {
-#     type = string
-#     description = "Admin vault access"  
-# }
+variable "VAULT_NAMESPACE" {
+    type = string
+    description = "Admin vault access"  
+}

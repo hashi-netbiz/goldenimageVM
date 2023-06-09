@@ -42,3 +42,13 @@ variable "image_id" {
     type = string
     description = "Azure shared image id"    
 }
+
+variable "customdata_cloudinit" {
+    type = string
+    description = "cloud init custom data for vm"    
+}
+
+variable "ssh_public_key" {
+    type = string
+    description = "ssh public key for vm"    
+}
