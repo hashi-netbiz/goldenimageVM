@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.37.0"
     }
+    tls = {
+      source = "hashicorp/tls"
+      version = "~>4.0"
+    }
     vault = {
       source  = "hashicorp/vault"
       version = "~> 3.0.0"
@@ -31,5 +35,5 @@ provider "azurerm" {
 # export environmental vars as TF_VAR_VAULT_ADDR and TF_VARS_VAULT_TOKEN
 provider "vault" {
   address = var.VAULT_ADDR
-  token   = var.VAULT_TOKEN
+  #token   = var.VAULT_TOKEN
 }

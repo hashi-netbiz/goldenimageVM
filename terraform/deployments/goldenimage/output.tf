@@ -3,15 +3,15 @@ output "vault_address" {
   value       = var.VAULT_ADDR
 }
 
-output "vault_token" {
-  description = "token to access vault"
-  value       = var.VAULT_TOKEN
-}
+# output "vault_token" {
+#   description = "token to access vault"
+#   value       = var.VAULT_TOKEN
+# }
 
-output "vault_namespace" {
-  description = "admin namespace to vault"
-  value       = var.VAULT_NAMESPACE
-}
+# output "vault_namespace" {
+#   description = "admin namespace to vault"
+#   value       = var.VAULT_NAMESPACE
+# }
 
 # output "vm_user_login" {
 #     description = "vm user login"
