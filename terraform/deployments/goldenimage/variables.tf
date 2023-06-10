@@ -68,12 +68,17 @@ variable "VAULT_ADDR" {
   description = "address of vault cluster"
 }
 
-variable "VAULT_TOKEN" {
-    type = string
-    description = "Token to access vault"  
-}
+# variable "VAULT_TOKEN" {
+#     type = string
+#     description = "Token to access vault"  
+# }
 
-variable "VAULT_NAMESPACE" {
+# variable "VAULT_NAMESPACE" {
+#     type = string
+#     description = "Admin vault access"  
+# }
+
+variable "environment" {
     type = string
-    description = "Admin vault access"  
+    description = "The continuous integration tfvars environment"  
 }

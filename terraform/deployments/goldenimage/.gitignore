@@ -17,3 +17,6 @@ test.tfvars
 
 # Ignore .pem files
 #*.pem
+
+# ignore development directory
+development/*
