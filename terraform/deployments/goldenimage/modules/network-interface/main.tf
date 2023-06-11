@@ -26,7 +26,7 @@ resource "azurerm_network_interface" "nic" {
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "ssh_nsg" {
-  name                = "${var.vmname}_nsg"
+  name                = "${var.vmname}${random_integer.random_number.result}_nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
 
