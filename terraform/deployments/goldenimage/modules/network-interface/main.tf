@@ -1,17 +1,18 @@
-resource "random_id" "my_id" {
-  byte_length = 8
+resource "random_integer" "random_number" {
+  min = 100
+  max = 999
 }
 
 # Create public IPs
-resource "azurerm_public_ip" "my_nic_public_ip" {
-  name                = "${random_id.my_id.id}_PublicIP"
+resource "azurerm_public_ip" "nic_public_ip" {
+  name                = "${var.vmname}_ip"
   location            = var.location
   resource_group_name = var.resource_group_name 
   allocation_method   = "Dynamic"
 }
 
 resource "azurerm_network_interface" "nic" {
-    name                = "${var.vmname}-nic-01"
+    name                = "${var.vmname}${random_integer.random_number.result}"
     location            = var.location
     resource_group_name = var.resource_group_name    
     
@@ -19,13 +20,13 @@ resource "azurerm_network_interface" "nic" {
         name                          = "my_nic_configuration"
         subnet_id                     = var.subnet_id
         private_ip_address_allocation = "Dynamic"
-        public_ip_address_id          = azurerm_public_ip.my_nic_public_ip.id
+        public_ip_address_id          = azurerm_public_ip.nic_public_ip.id
     }
 }
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "ssh_nsg" {
-  name                = "${random_id.my_id.id}_NetworkSG"
+  name                = "${var.vmname}_nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
 

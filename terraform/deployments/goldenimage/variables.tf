@@ -33,16 +33,6 @@ variable "os_disk_type" {
   description = "type of the os disk. example Standard_LRS"
 }
 
-# variable "admin_username" {
-#   type        = string
-#   description = "local admin user of the virtual machine"
-# }
-
-# variable "admin_password" {
-#   type        = string
-#   description = "password of the local admin user"
-# }
-
 variable "vault_vmuser_secret_path" {
   type        = string
   description = "vm user credentials"
@@ -68,17 +58,7 @@ variable "VAULT_ADDR" {
   description = "address of vault cluster"
 }
 
-# variable "VAULT_TOKEN" {
-#     type = string
-#     description = "Token to access vault"  
-# }
-
-# variable "VAULT_NAMESPACE" {
-#     type = string
-#     description = "Admin vault access"  
-# }
-
 variable "environment" {
-    type = string
-    description = "The continuous integration tfvars environment"  
+  type        = string
+  description = "The continuous integration tfvars environment"
 }

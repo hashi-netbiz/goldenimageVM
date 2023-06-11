@@ -90,30 +90,31 @@ module "virtual-machine" {
   admin_password        = data.vault_generic_secret.vmuser_cred.data["password"]
   image_id              = data.azurerm_shared_image_version.img.id
 
-  customdata_cloudinit    = data.local_file.cloudinit.content
-  ssh_public_key = tls_private_key.ssh_key.public_key_openssh
+  customdata_cloudinit = data.local_file.cloudinit.content
+  ssh_public_key       = tls_private_key.ssh_key.public_key_openssh
+  environment = var.environment
 }
 
 # Push private key back up to vault
 resource "vault_generic_secret" "secret" {
-  depends_on = [ module.virtual-machine ]
+  depends_on = [module.virtual-machine]
 
   path = "secret/sshkeys/${var.environment}/${var.vmname}"
 
   data_json = jsonencode({
-    private_key = tls_private_key.ssh_key.private_key_pem    
+    private_key = tls_private_key.ssh_key.private_key_pem
   })
 }
 
-output "vault_address" {
-  description = "url of vault"
-  value       = var.VAULT_ADDR
-}
+# output "vault_address" {
+#   description = "url of vault"
+#   value       = var.VAULT_ADDR
+# }
 
-output "new_vm_id" {
-  description = "id of the new virtual machine"
-  value       = module.virtual-machine.vm_id
-}
+# output "new_vm_id" {
+#   description = "id of the new virtual machine"
+#   value       = module.virtual-machine.vm_id
+# }
 
 # output "customdata" {
 #   value = data.local_file.cloudinit.content

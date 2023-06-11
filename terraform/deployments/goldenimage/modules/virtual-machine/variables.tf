@@ -52,3 +52,8 @@ variable "ssh_public_key" {
     type = string
     description = "ssh public key for vm"    
 }
+
+variable "environment" {
+    type = string
+    description = "deployment environment for vm"    
+}
