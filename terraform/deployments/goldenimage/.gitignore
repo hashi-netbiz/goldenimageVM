@@ -5,5 +5,5 @@
 test.tfvars
 
 # .tfstate files
-*.tfstate
-*.tfstate.*
+terraform.tfstate
+terraform.tfstate.backup
