@@ -77,6 +77,8 @@ module "network-interface" {
 }
 
 module "virtual-machine" {
+  depends_on = [ module.network-interface ]
+  
   source                = "./modules/virtual-machine"
   vmname                = var.vmname
   location              = var.location
@@ -118,6 +120,6 @@ resource "vault_generic_secret" "secret" {
 #   value = data.local_file.cloudinit.content
 # }
 
-output "subs_id" {
-  value = var.ARM_SUBSCRIPTION_ID
-}
+# output "subs_id" {
+#   value = var.ARM_SUBSCRIPTION_ID
+# }

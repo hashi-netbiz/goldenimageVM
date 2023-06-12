@@ -24,7 +24,7 @@ resource "azurerm_linux_virtual_machine" "new_vm" {
     }   
 
     tags = {
-        Environment = var.environment
+        environment = var.environment
     } 
 }
 

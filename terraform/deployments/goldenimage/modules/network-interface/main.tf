@@ -45,6 +45,8 @@ resource "azurerm_network_security_group" "ssh_nsg" {
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "ssh-nsg-association" {
+  depends_on = [ azurerm_network_interface.nic ]
+  
   network_interface_id      = azurerm_network_interface.nic.id
   network_security_group_id = azurerm_network_security_group.ssh_nsg.id
 }
