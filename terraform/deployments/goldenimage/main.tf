@@ -21,20 +21,18 @@ terraform {
   }
 }
 
+# provider "azurerm" {
+#   features {}
+# }
+
 provider "azurerm" {
   features {}
+  
+  subscription_id = var.ARM_SUBSCRIPTION_ID
+  client_id       = var.ARM_CLIENT_ID
+  client_secret   = var.ARM_CLIENT_SECRET
+  tenant_id       = var.ARM_TENANT_ID
 }
-
-/*
-provider "azurerm" {
-  features {}
-
-  subscription_id = var.azure_subscription_id
-  client_id       = var.azure_client_id
-  client_secret   = var.azure_client_secret
-  tenant_id       = var.azure_tenant_id
-}
-*/
 
 # export environmental vars as TF_VAR_VAULT_ADDR and TF_VARS_VAULT_TOKEN
 provider "vault" {
@@ -120,3 +118,6 @@ resource "vault_generic_secret" "secret" {
 #   value = data.local_file.cloudinit.content
 # }
 
+output "subs_id" {
+  value = var.ARM_SUBSCRIPTION_ID
+}

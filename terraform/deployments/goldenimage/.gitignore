@@ -1,22 +1,9 @@
-FUTURE-TOPICS
-#.gitignore
-
-# macOS Files
-.DS_Store
-
-# Ignore .sh files
-#*.sh
-
-# Terraform Files and Folders
+# Local .terraform directories
 .terraform
-*.tfstate
-*.tfstate.backup
+**/.terraform/*
 .terraform.lock.hcl
 test.tfvars
-#*.tfvars
 
-# Ignore .pem files
-#*.pem
-
-# ignore development directory
-development/*
+# .tfstate files
+*.tfstate
+*.tfstate.*

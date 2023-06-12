@@ -58,6 +58,26 @@ variable "VAULT_ADDR" {
   description = "address of vault cluster"
 }
 
+variable "ARM_SUBSCRIPTION_ID" {
+  type        = string
+  description = "azure subscription id"
+}
+
+variable "ARM_CLIENT_ID" {
+  type        = string
+  description = "azure client id"
+}
+
+variable "ARM_CLIENT_SECRET" {
+  type        = string
+  description = "azure client secret"
+}
+
+variable "ARM_TENANT_ID" {
+  type        = string
+  description = "azure teneant id"
+}
+
 variable "environment" {
   type        = string
   description = "The continuous integration tfvars environment"
