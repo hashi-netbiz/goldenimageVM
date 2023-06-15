@@ -1,6 +1,13 @@
 terraform {
   required_version = "1.4.6"
 
+  backend "azurerm" {
+    resource_group_name  = "azure-storage-explorer"
+    storage_account_name = "webtfstatesa"
+    container_name       = "tfstate-dev"
+    key                  = "terraform.tfstate"
+  }
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -59,7 +66,7 @@ data "vault_generic_secret" "vmuser_cred" {
 
 # Data template cloud-init bootstrapping file
 data "local_file" "cloudinit" {
-  filename = "${path.module}/cloudinit.conf"
+  filename = "../cloudinit.conf"
 }
 
 # Create (and display) an SSH key
@@ -69,7 +76,7 @@ resource "tls_private_key" "ssh_key" {
 }
 
 module "network-interface" {
-  source              = "./modules/network-interface"
+  source              = "../modules/network-interface"
   vmname              = var.vmname
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -78,8 +85,8 @@ module "network-interface" {
 
 module "virtual-machine" {
   depends_on = [ module.network-interface ]
-  
-  source                = "./modules/virtual-machine"
+
+  source                = "../modules/virtual-machine"
   vmname                = var.vmname
   location              = var.location
   resource_group_name   = var.resource_group_name
@@ -89,8 +96,9 @@ module "virtual-machine" {
   admin_username        = data.vault_generic_secret.vmuser_cred.data["username"]
   admin_password        = data.vault_generic_secret.vmuser_cred.data["password"]
   image_id              = data.azurerm_shared_image_version.img.id
-
-  customdata_cloudinit = data.local_file.cloudinit.content
+  
+  # before passing on the custom_data to the vm module, we need to add the context user to the docker group
+  customdata_cloudinit = replace(data.local_file.cloudinit.content,"usermod -aG docker VMUSER","usermod -aG docker ${data.vault_generic_secret.vmuser_cred.data["username"]}")
   ssh_public_key       = tls_private_key.ssh_key.public_key_openssh
   environment = var.environment
 }
@@ -105,21 +113,3 @@ resource "vault_generic_secret" "secret" {
     private_key = tls_private_key.ssh_key.private_key_pem
   })
 }
-
-# output "vault_address" {
-#   description = "url of vault"
-#   value       = var.VAULT_ADDR
-# }
-
-# output "new_vm_id" {
-#   description = "id of the new virtual machine"
-#   value       = module.virtual-machine.vm_id
-# }
-
-# output "customdata" {
-#   value = data.local_file.cloudinit.content
-# }
-
-# output "subs_id" {
-#   value = var.ARM_SUBSCRIPTION_ID
-# }
