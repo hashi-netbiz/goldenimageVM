@@ -5,7 +5,7 @@ resource "random_integer" "random_number" {
 
 # Create public IPs
 resource "azurerm_public_ip" "nic_public_ip" {
-  name                = "${var.vmname}_ip"
+  name                = "${var.vmname}${random_integer.random_number.result}_ip"
   location            = var.location
   resource_group_name = var.resource_group_name 
   allocation_method   = "Dynamic"
