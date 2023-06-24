@@ -3,8 +3,8 @@ export RESOURCE_GROUP_NAME="azure-storage-explorer"
 export LOCATION="eastus"
 export STORAGE_ACCOUNT_NAME="webtfstatesa"
 export CONTAINER_NAME_DEV="tfstate-dev"
-export CONTAINER_NAME_STAGING="tfstate-staging"
-export CONTAINER_NAME_PROD="tfstate-production"
+export CONTAINER_NAME_STAGING="tfstate-stage"
+export CONTAINER_NAME_PROD="tfstate-prod"
 
 # Create resource group ( if it does not exist)
 az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
