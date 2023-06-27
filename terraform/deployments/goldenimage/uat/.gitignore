@@ -2,7 +2,7 @@
 .terraform
 **/.terraform/*
 .terraform.lock.hcl
-test.tfvars
+#test.tfvars
 
 # .tfstate files
 terraform.tfstate
