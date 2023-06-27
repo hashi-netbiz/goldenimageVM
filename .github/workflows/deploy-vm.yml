@@ -55,3 +55,7 @@ jobs:
       # build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply     
       run: terraform apply -var-file="test.tfvars" -auto-approve
+      
+    # destroy infrastructure according to Terraform configuration files
+    - name: Terraform destroy     
+      run: terraform destroy -var-file="test.tfvars" -auto-approve
