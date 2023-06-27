@@ -99,8 +99,9 @@ module "virtual-machine" {
   #admin_password        = data.vault_generic_secret.vmuser_cred.data["password"]
   image_id              = data.azurerm_shared_image_version.img.id
   
-  # before passing on the custom_data to the vm module, we need to add the context user to the docker group
-  customdata_cloudinit = replace(data.local_file.cloudinit.content,"usermod -aG docker VMUSER","usermod -aG docker ${data.vault_generic_secret.vmuser_cred.data["username"]}")
+  # before passing on the custom_data to the vm module, we need to add thSe context user to the docker group
+  #customdata_cloudinit = replace(data.local_file.cloudinit.content,"usermod -aG docker VMUSER","usermod -aG docker ${data.vault_generic_secret.vmuser_cred.data["username"]}")
+  customdata_cloudinit = data.local_file.cloudinit.content
   ssh_public_key       = tls_private_key.ssh_key.public_key_openssh
   environment = var.environment
 }
