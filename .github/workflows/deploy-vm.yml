@@ -70,17 +70,9 @@ jobs:
           
           \`\`\`${process.env.PLAN}\`\`\`
           
-          </details>
-          
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
-            
-          github.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+          </details>     
 
-      # On push to main, build or change infrastructure according to Terraform configuration files
+
+      # build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply     
       run: terraform apply -var-file="test.tfvars" -auto-approve
