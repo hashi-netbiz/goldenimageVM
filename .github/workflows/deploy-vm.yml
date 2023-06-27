@@ -30,6 +30,11 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
+    
+    - name: Configure Terraform variables
+      id: tfvars
+      run: |
+        echo "::set-output name=filename::${{ github.event.inputs.tfvars }}"
 
     # Install the preferred version of Terraform CLI 
     - name: Setup Terraform
@@ -50,12 +55,12 @@ jobs:
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
-      run: terraform plan -var-file="test.tfvars" -no-color
+      run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -no-color
 
       # build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply     
-      run: terraform apply -var-file="test.tfvars" -auto-approve
+      run: terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -auto-approve
       
       # destroy infrastructure according to Terraform configuration files
     - name: Terraform destroy     
-      run: terraform destroy -var-file="test.tfvars" -auto-approve
+      run: terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -auto-approve
