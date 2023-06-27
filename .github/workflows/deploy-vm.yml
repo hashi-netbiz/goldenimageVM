@@ -10,54 +10,82 @@ on:
 jobs:
   terraform:
     name: 'Terraform'
-    env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
     runs-on: ubuntu-latest
-    environment: dev
 
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    # Set the working directory to main for the config files
     defaults:
       run:
         shell: bash
+        working-directory: ./terraform/deployments/goldenimage/uat
 
     steps:
+    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    - name: 'Terraform Format'
-      uses: hashicorp/setup-terraform@v2
+    # Install the preferred version of Terraform CLI 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
       with:
-        tf_actions_version: 1.4.0
-        tf_actions_subcommand: 'fmt'
-        tf_actions_working_dir: "./terraform/deployments/goldenimage/uat"
+        terraform_version: 1.4.0
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      run: terraform init 
+
+    # Run a terraform plan 
+    - name: Terraform Plan
+      id: plan
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }} 
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         
-    - name: 'Terraform Init'
-      uses: hashicorp/setup-terraform@v2
+      run: terraform plan -var-file="test.tfvars" -no-color
+    
+    # Add plan results
+    - name: add-plan-comment
+      id: comment
+      uses: actions/github-script@v3
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
-        tf_actions_version: 1.4.0
-        tf_actions_subcommand: 'init'
-        tf_actions_working_dir: "./terraform/deployments/goldenimage/uat"
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      
+          <details><summary>Show Plan</summary>
+          
+          \`\`\`${process.env.PLAN}\`\`\`
+          
+          </details>
+          
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
 
-    - name: 'Terraform Validate'
-      uses: hashicorp/setup-terraform@v2
-      with:
-        tf_actions_version: 1.4.0
-        tf_actions_subcommand: 'validate'
-        tf_actions_working_dir: "./terraform/deployments/goldenimage/uat"
-        
-    - name: 'Terraform Plan'
-      uses: hashicorp/setup-terraform@v2
-      with:
-        tf_actions_version: 1.4.0
-        tf_actions_subcommand: 'plan'
-        tf_actions_working_dir: "./terraform/deployments/goldenimage/uat"
-
+      # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main'
-      uses: hashicorp/setup-terraform@v2
-      with:
-        tf_actions_version: 1.4.0
-        tf_actions_subcommand: 'apply'
-        tf_actions_working_dir: "./terraform/deployments/goldenimage/uat"
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      run: terraform apply -var-file="test.tfvars" -auto-approve
