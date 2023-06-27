@@ -1,5 +1,5 @@
 # This is a workflow to deploy the golden image with Actions
-name: Deployment of golden virtual machine
+name: Golden Image VM
 
 # Controls when the workflow will run
 on:
