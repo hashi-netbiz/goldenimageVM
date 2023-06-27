@@ -53,10 +53,10 @@ variable "image_gallery" {
   description = "Azure image gallery"
 }
 
-variable "VAULT_ADDR" {
-  type        = string
-  description = "address of vault cluster"
-}
+# variable "VAULT_ADDR" {
+#   type        = string
+#   description = "address of vault cluster"
+# }
 
 # variable "ARM_SUBSCRIPTION_ID" {
 #   type        = string
