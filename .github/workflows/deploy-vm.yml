@@ -46,7 +46,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
+        working-directory: ./terraform/deployments/goldenimage/uat
 
     steps:
     - name: Validate Input
