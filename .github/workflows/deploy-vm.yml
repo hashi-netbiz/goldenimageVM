@@ -15,7 +15,7 @@ on:
         required: true
         default: 'false' 
       environment:       
-        description: 'Select an environment'
+        description: 'Enter an environment (uat,stage or prod)'
         required: true
         default: 'uat'
 
