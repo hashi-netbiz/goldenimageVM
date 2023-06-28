@@ -14,6 +14,11 @@ on:
         description: 'Destroy infrastructure'
         required: true
         default: 'false' 
+      environment:       
+        description: 'Select an environment'
+        required: true
+        default: 'uat'
+
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -34,9 +39,18 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform/deployments/goldenimage/uat
+        working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.input_choice }}
 
     steps:
+    - name: Validate Input
+      run: |
+        choice="${{ github.event.inputs.input_choice }}"
+        if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
+          echo "Invalid choice. Please select one of: uat, stage, prod"
+          exit 1
+        fi
+        echo "Selected Option: $choice"
+
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
