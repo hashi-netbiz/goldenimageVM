@@ -17,9 +17,13 @@ on:
       destroy:
         description: 'Destroy infrastructure'
         required: true
-        default: 'false'        
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+        default: 'false'     
+env:
+  #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+  #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
+  ENVIRONMENT: "${{ github.event.inputs.environment }}"
+  
+# A workflow run is made up of one or more jobs tha t can run sequentially or in parallel
 jobs:
   terraform:
     name: 'Terraform'
@@ -30,16 +34,6 @@ jobs:
         shell: bash
         working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
         
-    if: ${{ github.event.inputs.environment == 'uat' }}      
-    env:
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
-      #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-      #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
-      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -59,7 +53,16 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
-      run: terraform init
+      run: |
+        if [ $ENVIRONMENT = "uat" ]; then
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }} 
+          ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+        fi  
+        terraform init
       
     # Run a terraform plan 
     - name: Terraform Plan
