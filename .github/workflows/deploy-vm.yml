@@ -53,16 +53,15 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
-      run: |
-        if [ $ENVIRONMENT = "uat" ]; then
-        env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }} 
-          ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-        fi  
-        terraform init
+      if: $ENVIRONMENT == "uat" 
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }} 
+        ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+    
+      run: terraform init
       
     # Run a terraform plan 
     - name: Terraform Plan
