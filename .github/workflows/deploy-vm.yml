@@ -27,6 +27,7 @@ env:
   #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
   #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
   ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+  ENVIRONMENT: "${{ github.event.inputs.environment }}"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -44,16 +45,20 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       
-    - name: Validate Input
-      id: choice
-      run: |
-        choice="${{ github.event.inputs.environment }}"
-        if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
-          echo "Invalid choice. Please select one of: uat, stage, prod"
-          exit 1
-        fi
-        echo "Selected Option: $choice"
-    
+    - name: set env secrets
+      id: directory
+      if: ${{ env.ENVIRONMENT == 'uat' }}
+      run: echo "Greeting. env is $ENVIRONMENT"
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
+        #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+        #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
+        ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+        ENVIRONMENT: "${{ github.event.inputs.environment }}"
+        
     - name: Configure Terraform variables
       id: tfvars
       run: |
