@@ -19,28 +19,28 @@ on:
         required: true
         default: 'false'        
 
-#env:
-  #ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  #ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-  #ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  #ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}     
-  #VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-  #VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
-  #ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+env:
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
+  TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+  TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
+  ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    environment: "${{ github.event.inputs.environment }}"
+    # environment: "${{ github.event.inputs.environment }}"
     
-    env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}   
-      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+    # env:
+    #   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+    #   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+    #   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+    #   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}   
+    #   ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     # Set the working directory to main for the config files
@@ -50,14 +50,14 @@ jobs:
         working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
 
     steps:
-    #- name: Validate Input
-      #run: |
-        #choice="${{ github.event.inputs.environment }}"
-        #if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
-          #echo "Invalid choice. Please select one of: uat, stage, prod"
-          #exit 1
-        #fi
-        #echo "Selected Option: $choice"
+    # - name: Validate Input
+    #   run: |
+    #     choice="${{ github.event.inputs.environment }}"
+    #     if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
+    #       echo "Invalid choice. Please select one of: uat, stage, prod"
+    #       exit 1
+    #     fi
+    #     echo "Selected Option: $choice"
 
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
