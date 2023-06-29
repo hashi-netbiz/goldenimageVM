@@ -72,12 +72,6 @@ jobs:
     # Run a terraform plan 
     - name: Terraform Plan
       id: plan   
-      env:
-        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}   
-        ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
       run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -no-color
       
       # apply or destroy infrastructure according to Terraform configuration files
