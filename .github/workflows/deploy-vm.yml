@@ -57,8 +57,7 @@ jobs:
         #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
         #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
         ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-        ENVIRONMENT: "${{ github.event.inputs.environment }}"
-        
+               
     - name: Configure Terraform variables
       id: tfvars
       run: |
