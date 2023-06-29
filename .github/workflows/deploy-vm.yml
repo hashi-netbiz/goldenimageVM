@@ -40,22 +40,14 @@ jobs:
         working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
 
     steps:
-    - name: Validate Input and set working directory
-      id: choice
-      run: |
-        echo "hello world"
-        #choice="${{ github.event.inputs.environment }}"
-        #if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
-          #echo "Invalid choice. Please select one of: uat, stage, prod"
-          #exit 1
-        #else
-          #working-directory: ./terraform/deployments/goldenimage/$choice
-        #fi
-        #echo "Selected Option: choice"
-
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
+      
+    - name: set working directory
+      id: choice
+      run: |
+        echo "hello world"
     
     - name: Configure Terraform variables
       id: tfvars
