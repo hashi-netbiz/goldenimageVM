@@ -37,7 +37,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
+        #working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
 
     steps:
     - name: Validate Input and set working directory
@@ -46,8 +46,8 @@ jobs:
         if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
           echo "Invalid choice. Please select one of: uat, stage, prod"
           exit 1
-        #else
-          #working-directory: ./terraform/deployments/goldenimage/$choice
+        else
+          working-directory: ./terraform/deployments/goldenimage/$choice
         fi
         #echo "Selected Option: $choice"
 
