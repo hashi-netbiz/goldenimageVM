@@ -26,23 +26,21 @@ env:
 # A workflow run is made up of one or more jobs tha t can run sequentially or in parallel
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Terraform uat environment'
     runs-on: ubuntu-latest
+    
+    if: ${{ github.event.inputs.environment == 'uat' }}      
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}   
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }} 
     
     defaults:
       run:
         shell: bash
         working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
-        
-#     if: ${{ github.event.inputs.environment == 'uat' }}      
-#     env:
-#       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-#       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-#       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-#       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
-#       #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-#       #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
-#       ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }} 
         
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -62,15 +60,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      id: init
-      if: ${{ github.event.inputs.environment == 'uat' }}      
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
-        ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-    
+      id: init   
       run: terraform init
       
     # Run a terraform plan 
