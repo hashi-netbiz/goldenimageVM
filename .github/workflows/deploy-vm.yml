@@ -44,10 +44,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       
-    - name: set working directory
+    - name: Validate Input
       id: choice
       run: |
-        echo "hello world"
+        choice="${{ github.event.inputs.environment }}"
+        if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
+          echo "Invalid choice. Please select one of: uat, stage, prod"
+          exit 1
+        fi
+        echo "Selected Option: $choice"
     
     - name: Configure Terraform variables
       id: tfvars
