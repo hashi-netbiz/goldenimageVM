@@ -44,19 +44,7 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-      
-#     - name: set env secrets
-#       id: directory
-#       if: ${{ env.ENVIRONMENT == 'uat' }}      
-#       env:
-#         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-#         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-#         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-#         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
-#         #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-#         #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
-#         ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-               
+           
     - name: Configure Terraform variables
       id: tfvars
       run: |
