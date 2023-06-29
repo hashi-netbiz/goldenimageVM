@@ -24,8 +24,8 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
-  TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-  TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
+  #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+  #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
   ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
