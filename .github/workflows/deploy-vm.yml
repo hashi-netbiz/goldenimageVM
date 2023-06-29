@@ -49,7 +49,7 @@ jobs:
         #else
           #working-directory: ./terraform/deployments/goldenimage/$choice
         fi
-        echo "Selected Option: $choice"
+        #echo "Selected Option: $choice"
 
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
