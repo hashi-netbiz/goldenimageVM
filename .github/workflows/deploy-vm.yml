@@ -17,52 +17,36 @@ on:
       destroy:
         description: 'Destroy infrastructure'
         required: true
-        default: 'false'        
-
+        default: 'false'     
 env:
-  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}     
-  TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-  TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
-  ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+  #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
+  ENVIRONMENT: "${{ github.event.inputs.environment }}"
+  
+# The workflow run will run the job specific to the deployment environment 
 jobs:
-  terraform:
-    name: 'Terraform'
+  terraform-uat:
+    name: 'Terraform uat environment'
     runs-on: ubuntu-latest
-    # environment: "${{ github.event.inputs.environment }}"
     
-    # env:
-    #   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-    #   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-    #   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-    #   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}   
-    #   ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    # Set the working directory to main for the config files
+    if: ${{ github.event.inputs.environment == 'uat' }}      
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}   
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }} 
+    
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform/deployments/goldenimage/${{ github.event.inputs.environment }}
-
+        working-directory: ./terraform/deployments/goldenimage/uat
+        
     steps:
-    # - name: Validate Input
-    #   run: |
-    #     choice="${{ github.event.inputs.environment }}"
-    #     if [[ "$choice" != "uat" && "$choice" != "stage" && "$choice" != "prod" ]]; then
-    #       echo "Invalid choice. Please select one of: uat, stage, prod"
-    #       exit 1
-    #     fi
-    #     echo "Selected Option: $choice"
-
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-    
+           
     - name: Configure Terraform variables
       id: tfvars
       run: |
@@ -76,21 +60,118 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      id: init
+      id: init   
       run: terraform init
       
     # Run a terraform plan 
     - name: Terraform Plan
       id: plan   
-      env:
-        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}   
-        ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
       run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -no-color
       
-      # apply or destroy infrastructure according to Terraform configuration files
+    #  apply or destroy infrastructure according to Terraform configuration files
+    - name: Terraform Apply or Destroy
+      run: |
+        if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
+          terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }}
+        else
+          terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }}
+        fi
+
+  terraform-stage:
+    name: 'Terraform stage environment'
+    runs-on: ubuntu-latest
+    
+    if: ${{ github.event.inputs.environment == 'stage' }}      
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID_STAGE }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET_STAGE }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID_STAGE }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID_STAGE }}   
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY_STAGE }} 
+    
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./terraform/deployments/goldenimage/stage
+        
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+           
+    - name: Configure Terraform variables
+      id: tfvars
+      run: |
+        echo "::set-output name=filename::${{ github.event.inputs.tfvars }}"
+
+    # Install the preferred version of Terraform CLI 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.4.6
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init   
+      run: terraform init
+      
+    # Run a terraform plan 
+    - name: Terraform Plan
+      id: plan   
+      run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -no-color
+      
+    #  apply or destroy infrastructure according to Terraform configuration files
+    - name: Terraform Apply or Destroy
+      run: |
+        if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
+          terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }}
+        else
+          terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }}
+        fi
+  terraform-prod:
+    name: 'Terraform prod environment'
+    runs-on: ubuntu-latest
+    
+    if: ${{ github.event.inputs.environment == 'prod' }}      
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID_PROD }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET_PROD }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID_PROD }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID_PROD }}   
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY_PROD }} 
+    
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./terraform/deployments/goldenimage/prod
+        
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+           
+    - name: Configure Terraform variables
+      id: tfvars
+      run: |
+        echo "::set-output name=filename::${{ github.event.inputs.tfvars }}"
+
+    # Install the preferred version of Terraform CLI 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.4.6
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init   
+      run: terraform init
+      
+    # Run a terraform plan 
+    - name: Terraform Plan
+      id: plan   
+      run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -no-color
+      
+    #  apply or destroy infrastructure according to Terraform configuration files
     - name: Terraform Apply or Destroy
       run: |
         if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
