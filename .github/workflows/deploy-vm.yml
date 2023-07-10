@@ -10,6 +10,10 @@ on:
         description: 'Enter an environment (uat,stage or prod)'
         required: true
         default: 'uat'
+      vm-name:       
+        description: 'Enter the VM name'
+        required: true
+        #default: 'test4'
       tfvars:
         description: 'TFVars Filename'
         required: true
