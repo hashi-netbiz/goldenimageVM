@@ -25,7 +25,7 @@ on:
 env:
   #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
   #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }}
-  ENVIRONMENT: "${{ github.event.inputs.environment }}"
+  #ENVIRONMENT: "${{ github.event.inputs.environment }}"
   
 # The workflow run will run the job specific to the deployment environment 
 jobs:
@@ -65,20 +65,20 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init   
-      run: terraform init
+      run: terraform init -backend-config="key=${{ github.event.inputs.vm-name }}terraform.tfstate" -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}" 
       
     # Run a terraform plan 
     - name: Terraform Plan
       id: plan   
-      run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -no-color
+      run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }} -no-color 
       
     #  apply or destroy infrastructure according to Terraform configuration files
     - name: Terraform Apply or Destroy
       run: |
         if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
-          terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }}
+          terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}
         else
-          terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }}
+          terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}
         fi
 
   terraform-stage:
