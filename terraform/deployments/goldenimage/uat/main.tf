@@ -5,7 +5,7 @@ terraform {
     resource_group_name  = "azure-storage-explorer"
     storage_account_name = "webtfstatesa"
     container_name       = "tfstate-dev"
-    key                  = "terraform.tfstate"
+    #key                  = "terraform.tfstate"
   }
 
   required_providers {
