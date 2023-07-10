@@ -70,15 +70,15 @@ jobs:
     # Run a terraform plan 
     - name: Terraform Plan
       id: plan   
-      run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }} -no-color 
+      run: terraform plan -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}" -no-color 
       
     #  apply or destroy infrastructure according to Terraform configuration files
     - name: Terraform Apply or Destroy
       run: |
         if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
-          terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}
+          terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}"
         else
-          terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}
+          terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}"
         fi
 
   terraform-stage:
