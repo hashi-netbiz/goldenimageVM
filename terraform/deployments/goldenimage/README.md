@@ -1,6 +1,6 @@
 Terraform IAC code to create virtual machine in azure using the custom centos 9 golden image.
 
-    1)  visual studio code development environment is assumed and git installed. 
+    1)  Visual Studio Code (VSC) development environment is assumed and git installed. 
 
     2)  Create the VM user credential secret (username and password) in vault. Make a note of the secret path and the new vm user 
          credential secret (see below). The path may be something like "secret/{USER-DEFINED-SECRET-NAME}". Now modify 
@@ -10,9 +10,9 @@ Terraform IAC code to create virtual machine in azure using the custom centos 9 
 	     "data": {
        		"password": "{USER PASSWORD}",
       		 "username": "{VM USERNAME}"
-    	  }
+    	     }
 
-    3)  Clone the github repo (.........) to your local enviroment and open it in visual studio code (VSC). Ensure that git bash is your CLI terminal.
+    3)  Clone the github repo (.........) to your local enviroment and open it in VSC. Ensure that git bash is your CLI terminal.
 
     4)  Obtain the Application Identity and the hashicorp vault login credentials from the Administrator. Export the 
          identity and credentials in the git bash session in VSC where terraform will be executed as below:
