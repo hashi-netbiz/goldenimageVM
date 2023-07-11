@@ -44,8 +44,11 @@ Terraform IAC code to create virtual machine in azure using the custom centos 9 
 	          bash ./vmexist.sh [YOUR-VM-NAME] [YOUR-RESOURCE-GROUP-NAME]
 
     7)  Navigate to the environment where you intend creating the VM. Create a NEW tfvars file. Copy the content of the template.tfvars file 
-         and modify accordingly.
+        and modify accordingly.
 	          [YOUR-VM-NAME].tfvars
+	   
+	NB: If you are happy with the parameters set in template.tfvars, there is no need to create a new tfvars file and the template.tfvars
+        file can replace the [YOUR-VM-NAME].tfvars in 8) and 9) below.
 
     8)  Execute the following commands to create the VM:
 	
