@@ -77,7 +77,7 @@ jobs:
       run: |
         if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
           terraform destroy -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}" 
-          rm ${{ github.event.inputs.vm-name }}.tfstate
+          az storage blob delete --name ${{ github.event.inputs.vm-name }}.tfstate --container-name tfstate-dev --account-name webtfstatesa --account-key ${{ secrets.ARM_ACCESS_KEY }} --connection-string '' 
         else
           terraform apply -auto-approve -var-file=${{ steps.tfvars.outputs.filename }} -var "vmname=${{ github.event.inputs.vm-name }}"
         fi
