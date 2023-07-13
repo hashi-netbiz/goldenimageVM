@@ -19,7 +19,7 @@ on:
         required: true
         #default: 'default.tfvars'  
       destroy:
-        description: 'Destroy infrastructure'
+        description: 'Destroy Virtual Machine'
         required: true
         default: 'false'     
 #env:
