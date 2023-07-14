@@ -2,9 +2,9 @@ terraform {
   required_version = "1.4.6"
 
   backend "azurerm" {
-    resource_group_name  = "TCW-DevOps"
-    storage_account_name = "tcwtfstates"
-    container_name       = "tfstate-uat"
+    resource_group_name  = "azure-storage-explorer"
+    storage_account_name = "webtfstatesa"
+    container_name       = "tfstate-dev"
     #key                  = "terraform.tfstate"
   }
   
