@@ -28,23 +28,23 @@ terraform {
   }
 }
 
+# provider "azurerm" {
+#   features {}
+# }
+
 provider "azurerm" {
   features {}
+  
+  subscription_id = var.ARM_SUBSCRIPTION_ID
+  client_id       = var.ARM_CLIENT_ID
+  client_secret   = var.ARM_CLIENT_SECRET
+  tenant_id       = var.ARM_TENANT_ID
 }
 
-#provider "azurerm" {
-  #features {}  
-  #subscription_id = var.ARM_SUBSCRIPTION_ID
-  #client_id       = var.ARM_CLIENT_ID
-  #client_secret   = var.ARM_CLIENT_SECRET
-  #tenant_id       = var.ARM_TENANT_ID
-#}
-
-# export environmental vars as TF_VAR_VAULT_ADDR and TF_VARS_VAULT_TOKEN
-# provider "vault" {
-#   address = var.VAULT_ADDR
-#   #token   = var.VAULT_TOKEN
-# }
+provider "vault" {
+  address = var.VAULT_ADDR
+  token   = var.VAULT_TOKEN
+}
 
 data "azurerm_shared_image_version" "img" {
   name                = var.image_version
@@ -59,9 +59,9 @@ data "azurerm_subnet" "vm_subnet" {
   resource_group_name  = var.resource_group_name
 }
 
-# data "vault_generic_secret" "vmuser_cred" {
-#   path = var.vault_vmuser_secret_path
-# }
+data "vault_generic_secret" "vmuser_cred" {
+  path = var.vault_vmuser_secret_path
+}
 
 # Data template cloud-init bootstrapping file
 data "local_file" "cloudinit" {
@@ -92,26 +92,23 @@ module "virtual-machine" {
   network_interface_ids = [module.network-interface.nic_id]
   vm_size               = var.vm_size
   os_disk_type          = var.os_disk_type
-  admin_username        = "netbiz"
-  admin_password        = "Th3w00ki3131998"
-  #admin_username        = data.vault_generic_secret.vmuser_cred.data["username"]
-  #admin_password        = data.vault_generic_secret.vmuser_cred.data["password"]
+  admin_username        = data.vault_generic_secret.vmuser_cred.data["username"]
+  admin_password        = data.vault_generic_secret.vmuser_cred.data["password"]
   image_id              = data.azurerm_shared_image_version.img.id
   
-  # before passing on the custom_data to the vm module, we need to add thSe context user to the docker group
-  #customdata_cloudinit = replace(data.local_file.cloudinit.content,"usermod -aG docker VMUSER","usermod -aG docker ${data.vault_generic_secret.vmuser_cred.data["username"]}")
-  customdata_cloudinit = data.local_file.cloudinit.content
+  # before passing on the custom_data to the vm module, we need to add the context user to the docker group
+  customdata_cloudinit = replace(data.local_file.cloudinit.content,"usermod -aG docker VMUSER","usermod -aG docker ${data.vault_generic_secret.vmuser_cred.data["username"]}")
   ssh_public_key       = tls_private_key.ssh_key.public_key_openssh
   environment = var.environment
 }
 
-# # Push private key back up to vault
-# resource "vault_generic_secret" "secret" {
-#   depends_on = [module.virtual-machine]
+# Push private key back up to vault
+resource "vault_generic_secret" "secret" {
+  depends_on = [module.virtual-machine]
 
-#   path = "secret/sshkeys/${var.environment}/${var.vmname}"
+  path = "secret/sshkeys/${var.environment}/${var.vmname}"
 
-#   data_json = jsonencode({
-#     private_key = tls_private_key.ssh_key.private_key_pem
-#   })
-# }
+  data_json = jsonencode({
+    private_key = tls_private_key.ssh_key.private_key_pem
+  })
+}
