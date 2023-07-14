@@ -39,23 +39,19 @@ Terraform IAC code to create virtual machine in azure using the custom centos 9 
          It is assumed that a blog storage will be specified for each environment (tfstate-uat, tfstate-stage .... etc). All of the latter blog 
          storage will be created under a single Storage Account and Resource group (TCW-DevOps)
 
-    6)  Navigate to the 'goldenimage' root directory and execute the vmexist.sh file to determine if the new VM to be created already exists 
+    6)  Navigate to the web directory and execute the vmexist.sh file to determine if the new VM to be created already exists 
         or not. The command is shown below including the requisite arguments:
 	          bash ./vmexist.sh [YOUR-VM-NAME] [YOUR-RESOURCE-GROUP-NAME]
 
-    7)  Navigate to the environment where you intend creating the VM. Create a NEW tfvars file. Copy the content of the template.tfvars file 
-        and modify accordingly.
+    7)  Navigate to the environments directory and select the sub-directory where you intend creating the VM. Create a NEW tfvars file to your specification. Copy the content of the example.tfvars file and modify accordingly.
 	          [YOUR-VM-NAME].tfvars
 
-        NB: If you are happy with the parameters set in template.tfvars, there is no need to create a new tfvars file and the template.tfvars
-        file can replace the [YOUR-VM-NAME].tfvars in 8) and 9) below.
-
-    8)  Execute the following commands to create the VM:
+    8)  Execute the following commands to create the VM from the web directory:
 	
-            terraform init -backend-config="key=[YOUR-VM-NAME].tfstate" -var "vmname=[YOUR-VM-NAME]" -var-file=[YOUR-VM-NAME].tfvars
-            terraform plan -var-file=[YOUR-VM-NAME].tfvars -var "vmname=[YOUR-VM-NAME]"
-            terraform apply -var-file=[YOUR-VM-NAME].tfvars -var "vmname=[YOUR-VM-NAME]" -auto-approve
+            terraform init -backend-config="key=[YOUR-VM-NAME].tfstate" -var-file="../../environments/[prod OR uat OR stage]/[YOUR-VM-NAME].tfvars"
+            terraform plan -var-file="../../environments/[prod OR uat OR stage]/[YOUR-VM-NAME].tfvars"
+            terraform apply -var-file="../../environments/[prod OR uat OR stage]/[YOUR-VM-NAME].tfvars" 
 
-    9)  Execute the following commands to destroy the VM:
+    9)  Execute the following commands to destroy the VM from the web directory:
 
-	          terraform destroy -var-file=[YOUR-VM-NAME].tfvars -var "vmname=[YOUR-VM-NAME]" -auto-approve
+	          terraform destroy -var-file="../../environments/[prod OR uat OR stage]/[YOUR-VM-NAME].tfvars" 
