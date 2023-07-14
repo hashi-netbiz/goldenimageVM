@@ -50,9 +50,9 @@ data "azurerm_subnet" "vm_subnet" {
   resource_group_name  = var.resource_group_name
 }
 
-data "vault_generic_secret" "vmuser_cred" {
-  path = var.vault_vmuser_secret_path
-}
+#data "vault_generic_secret" "vmuser_cred" {
+  #path = var.vault_vmuser_secret_path
+#}
 
 # Data template cloud-init bootstrapping file
 data "local_file" "cloudinit" {
