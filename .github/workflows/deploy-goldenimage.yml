@@ -45,11 +45,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
            
-    # - name: Configure Terraform variables
-    #   id: tfvars
-    #   run: |
-    #     echo "::set-output name=filename::${{ github.event.inputs.tfvars }}"
-
     # Install the preferred version of Terraform CLI 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
