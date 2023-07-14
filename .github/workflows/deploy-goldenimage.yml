@@ -17,9 +17,9 @@ on:
         required: true
         default: 'false' 
 
-env:
-  TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-  TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }} 
+#env:
+  #TF_VAR_VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+  #TF_VAR_VAULT_TOKEN : ${{ secrets.VAULT_TOKEN }} 
 
 # The workflow run will run the job specific to the deployment environment 
 jobs:
