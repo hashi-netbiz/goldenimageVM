@@ -54,7 +54,7 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init   
-      run: terraform init -backend-config="key=${{ github.event.inputs.vmname }}" -backend-config="container_name=tfstate-${{ github.event.inputs.environment }}" -var-file="../../environments/${{ github.event.inputs.environment }}/${{ github.event.inputs.vmname }}.tfvars"
+      run: terraform init -backend-config="key=${{ github.event.inputs.vmname }}.tfstate" -backend-config="container_name=tfstate-${{ github.event.inputs.environment }}" -var-file="../../environments/${{ github.event.inputs.environment }}/${{ github.event.inputs.vmname }}.tfvars"
       
     # Run a terraform plan 
     - name: Terraform Plan
