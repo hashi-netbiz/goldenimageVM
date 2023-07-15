@@ -2,9 +2,9 @@ terraform {
   required_version = "1.4.6"
 
   backend "azurerm" {
-    resource_group_name  = "TCW-DevOps"
-    storage_account_name = "tcwtfstates"
-    container_name       = "tfstate-uat"
+    resource_group_name  = "azure-storage-explorer"
+    storage_account_name = "webtfstatesa"
+    container_name       = "tfstate-dev"
     #key                  = "terraform.tfstate"
   }
   
@@ -50,9 +50,9 @@ data "azurerm_subnet" "vm_subnet" {
   resource_group_name  = var.resource_group_name
 }
 
-data "vault_generic_secret" "vmuser_cred" {
-  path = var.vault_vmuser_secret_path
-}
+#data "vault_generic_secret" "vmuser_cred" {
+  #path = var.vault_vmuser_secret_path
+#}
 
 # Data template cloud-init bootstrapping file
 data "local_file" "cloudinit" {
