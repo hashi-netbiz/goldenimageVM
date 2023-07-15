@@ -4,7 +4,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "azure-storage-explorer"
     storage_account_name = "webtfstatesa"
-    container_name       = "tfstate-dev"
+    #container_name       = "tfstate-uat"
     #key                  = "terraform.tfstate"
   }
   

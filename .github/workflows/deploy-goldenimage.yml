@@ -54,7 +54,7 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init   
-      run: terraform init -backend-config="key=${{ github.event.inputs.vmname }}" -backend-config="container_name=tfstate-${{ github.event.inputs.environment }}.tfstate" -var-file="../../environments/${{ github.event.inputs.environment }}/${{ github.event.inputs.vmname }}.tfvars"
+      run: terraform init -backend-config="key=${{ github.event.inputs.vmname }}" -backend-config="container_name=tfstate-${{ github.event.inputs.environment }}" -var-file="../../environments/${{ github.event.inputs.environment }}/${{ github.event.inputs.vmname }}.tfvars"
       
     # Run a terraform plan 
     - name: Terraform Plan
@@ -67,7 +67,7 @@ jobs:
         if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
           terraform destroy -auto-approve -var-file="../../environments/${{ github.event.inputs.environment }}/${{ github.event.inputs.vmname }}.tfvars"
         # TODO : Handle destroying the tfstate for the VM
-          az storage blob delete --name ${{ github.event.inputs.vmname }}.tfstate --container-name tfstate-dev --account-name webtfstatesa --account-key ${{ secrets.ARM_ACCESS_KEY }} --connection-string $CONN_STR
+          az storage blob delete --name ${{ github.event.inputs.vmname }}.tfstate --container-name tfstate-${{ github.event.inputs.environment }} --account-name webtfstatesa --account-key ${{ secrets.ARM_ACCESS_KEY }} --connection-string $CONN_STR
         else
           terraform apply -auto-approve -var-file="../../environments/${{ github.event.inputs.environment }}/${{ github.event.inputs.vmname }}.tfvars"
         fi
